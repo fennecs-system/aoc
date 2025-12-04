@@ -81,10 +81,16 @@ pub fn day1P2(buf: []const u8) !i64 {
                 num_crosses = @divFloor(current_num, 100);
 
                 // if new position < current, we looped around
-                if (new_position == 0 or new_position <= current_position) {
+                if (new_position == 0 or num_crosses > 0) {
                     std.debug.print("Hit zero at {}, from {} adding {}\n", .{ new_position, current_position, current_num });
-                    num_zeros += num_crosses + 1;
-                    std.debug.print("Num crosses {}\n", .{num_crosses + 1});
+
+                    if (new_position == 0) {
+                        num_zeros += num_crosses + 1;
+                        std.debug.print("Num crosses {}\n", .{num_crosses + 1});
+                    } else {
+                        num_zeros += num_crosses;
+                        std.debug.print("Num crosses {}\n", .{num_crosses});
+                    }
                 }
                 current_position = new_position;
 
@@ -93,10 +99,16 @@ pub fn day1P2(buf: []const u8) !i64 {
                 new_position = @mod(current_position - current_num, 100);
                 num_crosses = @divFloor(current_num, 100);
 
-                if (new_position == 0 or new_position >= current_position) {
+                if (new_position == 0 or num_crosses > 0) {
                     std.debug.print("Hit zero at {}, from {} subtracting {}\n", .{ new_position, current_position, current_num });
-                    num_zeros += num_crosses + 1;
-                    std.debug.print("Num crosses {}\n", .{num_crosses + 1});
+
+                    if (new_position == 0) {
+                        num_zeros += num_crosses + 1;
+                        std.debug.print("Num crosses {}\n", .{num_crosses + 1});
+                    } else {
+                        num_zeros += num_crosses;
+                        std.debug.print("Num crosses {}\n", .{num_crosses});
+                    }
                 }
 
                 current_position = new_position;
