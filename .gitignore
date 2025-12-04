@@ -30,4 +30,9 @@ target/
 *.pdb
 /target
 Cargo.lock
+
+*data/
 data/
+*.zig-cache/
+.zig-cache/
+.zig-cache/*
