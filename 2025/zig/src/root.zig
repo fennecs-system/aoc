@@ -23,14 +23,15 @@ pub fn sub_mod_p(a: i64, b: i64, p: i64) i64 {
     return @mod(a - b, p);
 }
 
-pub fn day1() !i64 {
+pub fn day1() !struct { i64, i64 } {
     var gpa = std.heap.GeneralPurposeAllocator(.{ .thread_safe = true }){};
     const allocator = gpa.allocator();
     const buf = try readFile(allocator, "data/1.txt");
 
-    const result = try day1_p1(buf);
+    const p1 = try day1_p1(buf);
     allocator.free(buf);
-    return result;
+
+    return .{ p1, 0 };
 }
 
 pub fn day1_p1(buf: []const u8) !i64 {
