@@ -17,9 +17,10 @@ pub fn day1() !struct { i64, i64 } {
     const buf = try readFile(allocator, "data/1.txt");
 
     const p1 = try day1P1(buf);
+    const p2 = try day1P2(buf);
     allocator.free(buf);
 
-    return .{ p1, 0 };
+    return .{ p1, p2 };
 }
 
 pub fn day1P1(buf: []const u8) !i64 {
@@ -70,7 +71,8 @@ pub fn day1P1(buf: []const u8) !i64 {
 
 pub fn day1P2(buf: []const u8) !i64 {
     var current_position: i64 = 50;
-    var new_position = 0;
+    var new_position: i64 = 0;
+    var num_crosses: i64 = 0;
     var num_zeros: i64 = 0;
     var op: i32 = -1;
     var current_num: i64 = 0;
@@ -80,10 +82,13 @@ pub fn day1P2(buf: []const u8) !i64 {
             if (op == 1) {
                 new_position = @mod(current_position + current_num, 100);
 
+                num_crosses = @divFloor(current_num, 100);
+
                 // if new position < current, we looped around
-                if (current_position == 0 or new_position < current_position) {
-                    std.debug.print("Hit zero at addition of {}\n", .{current_num});
-                    num_zeros += 1;
+                if (new_position == 0 or new_position < current_position) {
+                    std.debug.print("Hit zero at {}, from {} adding {}\n", .{ new_position, current_position, current_num });
+                    std.debug.print("Num crosses {}\n", .{num_crosses});
+                    num_zeros += 1 + num_crosses;
                 }
                 current_position = new_position;
 
@@ -91,9 +96,12 @@ pub fn day1P2(buf: []const u8) !i64 {
             } else if (op == 0) {
                 new_position = @mod(current_position - current_num, 100);
 
-                if (current_position == 0 or new_position > current_position) {
-                    std.debug.print("Hit zero at subtraction of {}\n", .{current_num});
-                    num_zeros += 1;
+                num_crosses = @divFloor(current_num, 100);
+
+                if (new_position == 0 or new_position > current_position) {
+                    std.debug.print("Hit zero at {}, from {} subtracting {}\n", .{ new_position, current_position, current_num });
+                    std.debug.print("Num crosses {}\n", .{num_crosses});
+                    num_zeros += 1 + num_crosses;
                 }
 
                 current_position = new_position;
@@ -113,9 +121,7 @@ pub fn day1P2(buf: []const u8) !i64 {
         }
         if (op >= 0) {
             const num: i64 = char - '0';
-            std.debug.print("Num char: {}, num: {}\n", .{ char, num });
             current_num = 10 * (current_num) + num;
-            std.debug.print("Current num: {}\n", .{current_num});
         }
     }
 
