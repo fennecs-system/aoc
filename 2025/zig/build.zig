@@ -3,10 +3,14 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const mod = b.addModule("aoc", .{
+    const aoc = b.addModule("aoc", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
     });
+
+    const day1 = b.addModule("day1", .{ .root_source_file = b.path("src/day1.zig"), .target = target, .imports = &.{.{ .name = "aoc", .module = aoc }} });
+
+    const day2 = b.addModule("day2", .{ .root_source_file = b.path("src/day2.zig"), .target = target, .imports = &.{.{ .name = "aoc", .module = aoc }} });
 
     const exe = b.addExecutable(.{
         .name = "aoc",
@@ -14,9 +18,7 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
-            .imports = &.{
-                .{ .name = "aoc", .module = mod },
-            },
+            .imports = &.{ .{ .name = "aoc", .module = aoc }, .{ .name = "day1", .module = day1 }, .{ .name = "day2", .module = day2 } },
         }),
     });
 
@@ -33,7 +35,7 @@ pub fn build(b: *std.Build) void {
     }
 
     const mod_tests = b.addTest(.{
-        .root_module = mod,
+        .root_module = aoc,
     });
 
     const run_mod_tests = b.addRunArtifact(mod_tests);
